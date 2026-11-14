@@ -29,4 +29,18 @@ class DistributionTests(unittest.TestCase):
             (root/'scripts/leak.py').symlink_to(private)
             with self.assertRaises(RuntimeError):m.export_source(root,out)
 
+    def test_pruning_swift_build_symlink_keeps_its_target_untouched(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'bundle';build=stage/'.build';build.mkdir(parents=True)
+            outside=root/'keep';outside.mkdir();(outside/'important').write_text('keep')
+            (build/'release').symlink_to(outside,target_is_directory=True)
+            for folder,name in [('webhelper','steamwebhelper.exe'),('steam-session','steam-window-watch.exe')]:
+                (build/folder).mkdir();(build/folder/name).write_bytes(b'PE fixture')
+                (build/folder/'cache').mkdir()
+            m.prune_build(stage)
+            self.assertFalse((build/'release').is_symlink())
+            self.assertEqual((outside/'important').read_text(),'keep')
+            self.assertEqual(sorted(str(f.relative_to(build)) for f in build.rglob('*') if f.is_file()),
+                ['steam-session/steam-window-watch.exe','webhelper/steamwebhelper.exe'])
+
 if __name__=='__main__':unittest.main()

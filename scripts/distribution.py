@@ -34,6 +34,18 @@ def export_source(root,out):
         shutil.copy2(src,dest)
 
 
+def prune_build(stage):
+    def remove(item):
+        # SwiftPM's release/debug entries are symlinks, not owned directory trees.
+        if item.is_symlink() or not item.is_dir(): item.unlink()
+        else: shutil.rmtree(item)
+    for item in (stage/'.build').iterdir():
+        if item.name not in ('webhelper','steam-session'): remove(item)
+    for folder,keep in [('webhelper','steamwebhelper.exe'),('steam-session','steam-window-watch.exe')]:
+        for item in (stage/'.build'/folder).iterdir():
+            if item.name!=keep: remove(item)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action',choices=['build','package']);args=parser.parse_args()
@@ -48,11 +60,7 @@ def main():
         stage=Path(tmp)/'MacWinBridge';export_source(root,stage)
         subprocess.run(['bash','scripts/build-all.sh'],cwd=stage,check=True)
         # Ship exactly the two Windows helpers, not compiler caches or Swift build state.
-        for item in (stage/'.build').iterdir():
-            if item.name not in ('webhelper','steam-session'):shutil.rmtree(item) if item.is_dir() else item.unlink()
-        for folder,keep in [('webhelper','steamwebhelper.exe'),('steam-session','steam-window-watch.exe')]:
-            for item in (stage/'.build'/folder).iterdir():
-                if item.name!=keep:shutil.rmtree(item) if item.is_dir() else item.unlink()
+        prune_build(stage)
         for cache in stage.rglob('__pycache__'):shutil.rmtree(cache)
         if target.exists():shutil.rmtree(target)
         target.parent.mkdir(parents=True,exist_ok=True);shutil.move(str(stage),target)
