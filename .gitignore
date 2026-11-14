@@ -1,0 +1,27 @@
+.build/
+.runtime/
+.downloads/
+.artifacts/
+var/
+dist/
+.DS_Store
+.remember/
+__pycache__/
+*.py[cod]
+*.log
+*.dxvk-cache
+.env
+.env.*
+*.pem
+*.key
+# Local diagnostics/history may contain paths, account IDs and logs.
+docs/progress.md
+docs/runtime-validation.md
+docs/shared-storage-plan.md
+docs/superpowers/
+diagnostics/README.md
+.swiftpm/
+bin/
+.agents/
+.codex/
+.aws/
