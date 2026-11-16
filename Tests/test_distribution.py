@@ -2,8 +2,10 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+import sys
 
 SCRIPT=Path(__file__).resolve().parents[1]/'scripts/distribution.py'
+sys.path.insert(0, str(SCRIPT.parent))
 spec=importlib.util.spec_from_file_location('distribution',SCRIPT)
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 

@@ -11,6 +11,7 @@
 
 ```sh
 make test
+make privacy-check
 make build
 make package
 ```
@@ -24,6 +25,8 @@ The bundle contains:
 - `.build/webhelper/steamwebhelper.exe` and `.build/steam-session/steam-window-watch.exe`, compiled from included C source
 
 No Wine engine, proprietary Steam/game binaries, GStreamer installation, ZZZ sidecar binaries, logs or account data are included. These must be provisioned separately; see [RUNTIME.md](RUNTIME.md).
+
+The exporter checks source content for known credential patterns; the completed bundle is checked again for account files, private directories, symlinks and those patterns before it is published as build output. `make privacy-check` checks the Git index and all locally available Git history against the source allowlist and known credential patterns. CI fetches full history and runs this check before building. It does not log out or modify the developer's local accounts. These checks are guardrails, not a general-purpose secret detector.
 
 Apps locate the project root relative to their containing bundle. Keep the extracted folder structure intact. Moving the whole unused bundle is supported; moving a configured Wine prefix or existing game library is a separate migration and is not implemented by the build scripts.
 

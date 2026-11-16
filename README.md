@@ -60,6 +60,12 @@ CLI: `bin/bridge doctor --profile world` หรือ `bin/bridge status --profi
 
 โฟลเดอร์เหล่านี้ถูกกันออกจาก Git และแพ็กเกจ build ไม่ควรนำ prefix หรือ logs ที่มีข้อมูลบัญชีขึ้น repository
 
+### บัญชีของผู้ใช้แต่ละคน
+
+การ clone หรือดาวน์โหลดแพ็กเกจ build **ไม่พาข้อมูลล็อกอินของผู้พัฒนาไปด้วย** ผู้ใช้ใหม่ต้องเตรียม Wine/Steam ของตนเองตามคู่มือ runtime แล้วล็อกอิน Steam และ HoYoverse ด้วยบัญชีของตนเอง ข้อมูลที่จำการล็อกอินจะอยู่ในเครื่องนั้นเท่านั้น ตัวเปิดไม่กำหนดชื่อบัญชีหรือรหัสผ่านไว้ในซอร์ส
+
+แจกผ่าน `make package` เท่านั้น อย่าบีบอัดโฟลเดอร์ที่ใช้เล่นทั้งชุด เพราะ `var/` มีบัญชี เซฟ และ registry อยู่ การเพิ่มไฟล์เหล่านี้ใน `.gitignore` ไม่ได้ลบไฟล์ที่เคย commit แล้ว จึงมี `make privacy-check` ตรวจทั้ง Git index และประวัติ ส่วน CI ตรวจอัตโนมัติก่อน build และตัวแพ็กตรวจซ้ำก่อนสร้างไฟล์แจก ตัวตรวจครอบคลุมตำแหน่งข้อมูลส่วนตัวและรูปแบบ credential ที่รู้จัก ไม่ใช่การรับรองว่าไฟล์ใด ๆ จะไม่มีความลับทุกรูปแบบ
+
 ## ที่มา
 
 โค้ด Steam webhelper wrapper มาจาก [notpop/steam-on-m1-wine](https://github.com/notpop/steam-on-m1-wine) ตาม [third-party notice](third_party/steam-webhelper/README.md) และ MIT license ที่แนบไว้ ดู [NOTICE.md](NOTICE.md) สำหรับขอบเขตการแจกจ่าย

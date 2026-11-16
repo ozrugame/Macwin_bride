@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+from privacy_check import check_bundle, check_content, check_path
 
 ROOT_FILES={'.gitignore','Package.swift','README.md','Brewfile','Makefile','NOTICE.md'}
 TREES={'Sources':{'.swift'},'native':{'.swift','.c','.h'},'Tests':{'.swift','.py','.c'},
@@ -30,6 +31,8 @@ def source_files(root):
 
 def export_source(root,out):
     for src in source_files(root):
+        check_path(src.relative_to(root).as_posix())
+        check_content(src.relative_to(root).as_posix(), src.read_bytes())
         dest=out/src.relative_to(root);dest.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(src,dest)
 
@@ -62,6 +65,7 @@ def main():
         # Ship exactly the two Windows helpers, not compiler caches or Swift build state.
         prune_build(stage)
         for cache in stage.rglob('__pycache__'):shutil.rmtree(cache)
+        check_bundle(stage)
         if target.exists():shutil.rmtree(target)
         target.parent.mkdir(parents=True,exist_ok=True);shutil.move(str(stage),target)
     print('Build ready:',target)

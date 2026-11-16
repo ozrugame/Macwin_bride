@@ -25,3 +25,20 @@ bin/
 .agents/
 .codex/
 .aws/
+# Account/session files must never be shared, even if copied outside var/.
+loginusers.vdf
+localconfig.vdf
+config.vdf
+ssfn[0-9]*
+userdata/
+htmlcache/
+webcache/
+configstore/
+system.reg
+user.reg
+userdef.reg
+Cookies
+Cookies-journal
+Login Data
+.git-credentials
+.netrc

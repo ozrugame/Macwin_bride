@@ -1,4 +1,7 @@
-.PHONY: test build package
+.PHONY: test build package privacy-check
+
+privacy-check:
+	python3 scripts/privacy_check.py --history
 
 test:
 	bash scripts/swift.sh test
